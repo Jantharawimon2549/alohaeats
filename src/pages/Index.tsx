@@ -1,16 +1,38 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useRef, useState } from "react";
+import Navbar from "@/components/Navbar";
+import HeroSection from "@/components/HeroSection";
+import PromoBanner from "@/components/PromoBanner";
+import MenuSection from "@/components/MenuSection";
+import FloatingCart from "@/components/FloatingCart";
+import CartDrawer from "@/components/CartDrawer";
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+const Index = () => {
+  const menuRef = useRef<HTMLElement>(null);
+  const [cartOpen, setCartOpen] = useState(false);
+
+  const scrollToMenu = () => {
+    menuRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
+    <div className="min-h-screen">
+      <Navbar onCartClick={() => setCartOpen(true)} />
+      <HeroSection onScrollToMenu={scrollToMenu} />
+      <PromoBanner />
+      <MenuSection ref={menuRef} />
+
+      {/* Footer */}
+      <footer className="py-8 text-center border-t border-border/30">
+        <p className="font-display text-xl text-primary/60 mb-1">Aloha Bites</p>
+        <p className="font-body text-xs text-muted-foreground">
+          © 2026 Aloha Bites — สดจากทะเลฮาวาย ใส่ใจทุกคำ 🌺
+        </p>
+      </footer>
+
+      <FloatingCart onClick={() => setCartOpen(true)} />
+      <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
     </div>
   );
 };
-
-const Index = PlaceholderIndex;
 
 export default Index;
