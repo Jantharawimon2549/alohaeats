@@ -1,8 +1,10 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Minus, Plus, ShoppingBag, Trash2, Tag } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
 import { toast } from "sonner";
+import { createOrder } from "@/lib/orderService";
 
 interface CartDrawerProps {
   open: boolean;
@@ -11,7 +13,9 @@ interface CartDrawerProps {
 
 const CartDrawer = ({ open, onClose }: CartDrawerProps) => {
   const { items, updateQuantity, removeItem, clearCart, total, discount, promoCode, setPromoCode, orderType, setOrderType } = useCart();
+  const { user } = useAuth();
   const [codeInput, setCodeInput] = useState("");
+  const [ordering, setOrdering] = useState(false);
 
   const applyCode = () => {
     setPromoCode(codeInput);
@@ -147,10 +151,32 @@ const CartDrawer = ({ open, onClose }: CartDrawerProps) => {
                   <span className="font-body font-extrabold text-xl text-accent">฿{total}</span>
                 </div>
                 <button
-                  className="w-full bg-primary text-primary-foreground font-body font-bold py-3.5 rounded-xl text-base shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] active:scale-95"
-                  onClick={() => toast.success("🎉 ส่งออร์เดอร์สำเร็จ! ขอบคุณครับ")}
+                  className="w-full bg-primary text-primary-foreground font-body font-bold py-3.5 rounded-xl text-base shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+                  disabled={ordering}
+                  onClick={async () => {
+                    setOrdering(true);
+                    try {
+                      const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0);
+                      await createOrder({
+                        userId: user?.id || null,
+                        orderType: orderType as "dine-in" | "takeaway",
+                        items,
+                        promoCode,
+                        subtotal,
+                        discount,
+                        total,
+                      });
+                      toast.success("🎉 ส่งออร์เดอร์สำเร็จ! ขอบคุณครับ");
+                      clearCart();
+                      onClose();
+                    } catch (err: any) {
+                      toast.error(err.message || "เกิดข้อผิดพลาด");
+                    } finally {
+                      setOrdering(false);
+                    }
+                  }}
                 >
-                  สั่งเลย 🌺
+                  {ordering ? "กำลังส่งออร์เดอร์..." : "สั่งเลย 🌺"}
                 </button>
                 <button
                   onClick={clearCart}
