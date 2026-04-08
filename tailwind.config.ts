@@ -15,7 +15,7 @@ export default {
     extend: {
       fontFamily: {
         display: ["Pacifico", "cursive"],
-        body: ["Nunito", "sans-serif"],
+        body: ["Prompt", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
