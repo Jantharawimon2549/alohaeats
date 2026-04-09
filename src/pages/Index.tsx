@@ -5,6 +5,7 @@ import PromoBanner from "@/components/PromoBanner";
 import MenuSection from "@/components/MenuSection";
 import FloatingCart from "@/components/FloatingCart";
 import CartDrawer from "@/components/CartDrawer";
+import ContactSection from "@/components/ContactSection";
 
 const Index = () => {
   const menuRef = useRef<HTMLElement>(null);
@@ -20,6 +21,7 @@ const Index = () => {
       <HeroSection onScrollToMenu={scrollToMenu} />
       <PromoBanner />
       <MenuSection ref={menuRef} />
+      <ContactSection />
 
       {/* Footer */}
       <footer className="py-8 text-center border-t border-border/30">
